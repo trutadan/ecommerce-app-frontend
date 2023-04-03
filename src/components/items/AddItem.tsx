@@ -1,17 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import {
-  Container,
-  Card,
-  CardContent,
-  IconButton,
-  TextField,
-  Button,
-} from "@mui/material";
+import { Container, TextField, Button, MenuItem } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { BACKEND_API_URL } from "../../constants";
 import { Item } from "../../models/Item";
+import { ItemCategory } from "../../models/ItemCategory";
 
 export const AddItem = () => {
   const navigate = useNavigate();
@@ -30,6 +24,18 @@ export const AddItem = () => {
     category: { id: 0, name: "", subcategory: undefined },
   });
 
+  const [categories, setCategories] = useState<ItemCategory[]>([]);
+  useEffect(() => {
+    axios
+      .get<ItemCategory[]>(`${BACKEND_API_URL}/item-category/`)
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
   const addItem = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -42,88 +48,86 @@ export const AddItem = () => {
 
   return (
     <Container>
-      <Card>
-        <CardContent>
-          <IconButton component={Link} to={`/items`}>
-            <ArrowBackIcon />
-          </IconButton>{" "}
-          <form onSubmit={addItem}>
-            <TextField
-              id="title"
-              label="Title"
-              variant="outlined"
-              fullWidth
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setItem({ ...item, title: event.target.value })
-              }
-            />
-            <TextField
-              id="price"
-              label="Price"
-              variant="outlined"
-              fullWidth
-              type="number"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setItem({ ...item, price: parseFloat(event.target.value) })
-              }
-            />
-            <TextField
-              id="discount_price"
-              label="Discount Price (optional)"
-              variant="outlined"
-              fullWidth
-              type="number"
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setItem({
-                  ...item,
-                  discount_price: parseFloat(event.target.value),
-                })
-              }
-            />
-            <TextField
-              id="description"
-              label="Description"
-              variant="outlined"
-              fullWidth
-              multiline
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setItem({ ...item, description: event.target.value })
-              }
-            />
-            <TextField
-              id="category_name"
-              label="Category Name"
-              variant="outlined"
-              fullWidth
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setItem({
-                  ...item,
-                  category: {
-                    ...item.category,
-                    name: event.target.value,
-                  },
-                })
-              }
-            />
-            <TextField
-              id="category_subcategory"
-              label="Category Subcategory (optional)"
-              variant="outlined"
-              fullWidth
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                setItem({
-                  ...item,
-                  category: {
-                    ...item.category,
-                    subcategory: event.target.value,
-                  },
-                })
-              }
-            />
-            <Button type="submit">Add Item</Button>
-          </form>
-        </CardContent>
-      </Card>
+      <h1>Add Item</h1>
+      <form onSubmit={addItem}>
+        <TextField
+          label="Title"
+          value={item.title}
+          onChange={(e) => setItem({ ...item, title: e.target.value })}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Price"
+          type="number"
+          value={item.price}
+          onChange={(e) =>
+            setItem({ ...item, price: parseFloat(e.target.value) })
+          }
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Available Number"
+          type="number"
+          value={item.available_number}
+          onChange={(e) =>
+            setItem({ ...item, available_number: parseFloat(e.target.value) })
+          }
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Total Number"
+          type="number"
+          value={item.total_number}
+          onChange={(e) =>
+            setItem({ ...item, total_number: parseFloat(e.target.value) })
+          }
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Description"
+          multiline
+          value={item.description}
+          onChange={(e) => setItem({ ...item, description: e.target.value })}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
+          label="Category"
+          select
+          value={item.category.id}
+          onChange={(e) =>
+            setItem({
+              ...item,
+              category: {
+                id: parseInt(e.target.value),
+                name: "",
+                subcategory: "",
+              },
+            })
+          }
+          required
+          fullWidth
+          margin="normal"
+        >
+          {categories.map((category) => (
+            <MenuItem key={category.id} value={category.id}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </TextField>
+        <Button type="submit" variant="contained" color="primary">
+          Add Item
+        </Button>
+      </form>
     </Container>
   );
 };
