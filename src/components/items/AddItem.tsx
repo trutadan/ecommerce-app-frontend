@@ -69,6 +69,17 @@ export const AddItem = () => {
           fullWidth
           margin="normal"
         />
+                <TextField
+          label="Discount price"
+          type="number"
+          value={item.discount_price}
+          onChange={(e) =>
+            setItem({ ...item, discount_price: parseFloat(e.target.value) })
+          }
+          required
+          fullWidth
+          margin="normal"
+        />
         <TextField
           label="Available Number"
           type="number"
@@ -101,6 +112,15 @@ export const AddItem = () => {
           margin="normal"
         />
         <TextField
+          label="Picture"
+          multiline
+          value={item.picture}
+          onChange={(e) => setItem({ ...item, description: e.target.value })}
+          required
+          fullWidth
+          margin="normal"
+        />
+        <TextField
           label="Category"
           select
           value={item.category.id}
@@ -118,6 +138,7 @@ export const AddItem = () => {
           fullWidth
           margin="normal"
         >
+        
           {categories.map((category) => (
             <MenuItem key={category.id} value={category.id}>
               {category.name}
