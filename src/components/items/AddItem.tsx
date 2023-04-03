@@ -30,10 +30,10 @@ export const AddItem = () => {
     category: { id: 0, name: "", subcategory: undefined },
   });
 
-  const addItem = async (event: { preventDefault: () => void }) => {
+  const addItem = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await axios.post(`${BACKEND_API_URL}/items/`, item);
+      await axios.post(`${BACKEND_API_URL}/item/`, item);
       navigate("/items");
     } catch (error) {
       console.log(error);

@@ -18,7 +18,7 @@ export const AppMenu = () => {
             <Link to="/items">Items</Link>
           </li>
           <li>
-            <Link to="/items/most-sold">Most Sold Items</Link>
+            <Link to="/items/average-available">Average Available Items</Link>
           </li>
         </ul>
       </div>

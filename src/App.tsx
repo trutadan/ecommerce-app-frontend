@@ -7,6 +7,8 @@ import { AllItems } from "./components/items/AllItems";
 import { DeleteItem } from "./components/items/DeleteItem";
 import ItemDetails from "./components/items/ItemDetails";
 import { AddItem } from "./components/items/AddItem";
+import { MostSoldItems } from "./components/items/MostSoldItems";
+import { AverageAvailableItems } from "./components/items/AverageAvailableItems";
 
 function App() {
   return (
@@ -20,6 +22,11 @@ function App() {
           <Route path="/items/:itemID/edit" element={<ItemDetails />} />
           <Route path="/items/:itemID/delete" element={<DeleteItem />} />
           <Route path="/items/add" element={<AddItem />} />
+          <Route path="/items/most-sold" element={<MostSoldItems />} />
+          <Route
+            path="/items/average-available"
+            element={<AverageAvailableItems />}
+          />
         </Routes>
       </Router>
     </React.Fragment>
