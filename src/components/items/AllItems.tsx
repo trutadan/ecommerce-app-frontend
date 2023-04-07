@@ -14,16 +14,15 @@ import {
 import React from "react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { BACKEND_API_URL } from "../../constants";
-import { Item } from "../../models/Item";
-import ReadMoreIcon from "@mui/icons-material/ReadMore";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import AddIcon from "@mui/icons-material/Add";
+import { BACKEND_API_URL } from "../../constants";
+import { DetailedItem } from "../../models/Item";
 
 export const AllItems = () => {
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<DetailedItem[]>([]);
 
   useEffect(() => {
     setLoading(true);
@@ -57,11 +56,10 @@ export const AllItems = () => {
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
-                <TableCell align="right">Title</TableCell>
-                <TableCell align="right">Price</TableCell>
-                <TableCell align="right">Discount Price</TableCell>
-                <TableCell align="right">Available number</TableCell>
-                <TableCell align="right">Total number</TableCell>
+                <TableCell align="center">Title</TableCell>
+                <TableCell align="center">Category</TableCell>
+                <TableCell align="center">Price</TableCell>
+                <TableCell align="center">Available number</TableCell>
                 <TableCell align="center">Operations</TableCell>
               </TableRow>
             </TableHead>
@@ -79,21 +77,10 @@ export const AllItems = () => {
                       {item.title}
                     </Link>
                   </TableCell>
-                  <TableCell align="right">{item.price}</TableCell>
-                  <TableCell align="right">{item.discount_price}</TableCell>
-                  <TableCell align="right">{item.available_number}</TableCell>
-                  <TableCell align="right">{item.total_number}</TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      component={Link}
-                      sx={{ mr: 3 }}
-                      to={`/items/${item.id}/details`}
-                    >
-                      <Tooltip title="View item's details" arrow>
-                        <ReadMoreIcon color="primary" />
-                      </Tooltip>
-                    </IconButton>
-
+                  <TableCell align="center">{item.category.name}</TableCell>
+                  <TableCell align="center">{item.price}</TableCell>
+                  <TableCell align="center">{item.available_number}</TableCell>
+                  <TableCell align="center">
                     <IconButton
                       component={Link}
                       sx={{ mr: 3 }}

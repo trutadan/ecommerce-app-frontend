@@ -5,15 +5,11 @@ import { Container, TextField, Button, MenuItem } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { BACKEND_API_URL } from "../../constants";
 import { Item } from "../../models/Item";
-import { ItemCategory } from "../../models/ItemCategory";
+import { DetailedItemCategory } from "../../models/ItemCategory";
 
 export const AddItem = () => {
   const navigate = useNavigate();
-
   const [item, setItem] = useState<Item>({
-    id: 0,
-    orders_count: "",
-    refunds_requested_count: "",
     title: "",
     price: 0,
     discount_price: undefined,
@@ -21,13 +17,13 @@ export const AddItem = () => {
     total_number: 0,
     description: "",
     picture: undefined,
-    category: { id: 0, name: "", subcategory: undefined },
+    category: 0,
   });
 
-  const [categories, setCategories] = useState<ItemCategory[]>([]);
+  const [categories, setCategories] = useState<DetailedItemCategory[]>([]);
   useEffect(() => {
     axios
-      .get<ItemCategory[]>(`${BACKEND_API_URL}/item-category/`)
+      .get<DetailedItemCategory[]>(`${BACKEND_API_URL}/item-category/`)
       .then((response) => {
         setCategories(response.data);
       })
@@ -38,6 +34,7 @@ export const AddItem = () => {
 
   const addItem = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    console.log(item);
     try {
       await axios.post(`${BACKEND_API_URL}/item/`, item);
       navigate("/items");
@@ -69,14 +66,13 @@ export const AddItem = () => {
           fullWidth
           margin="normal"
         />
-                <TextField
+        <TextField
           label="Discount price"
           type="number"
           value={item.discount_price}
           onChange={(e) =>
             setItem({ ...item, discount_price: parseFloat(e.target.value) })
           }
-          required
           fullWidth
           margin="normal"
         />
@@ -115,30 +111,24 @@ export const AddItem = () => {
           label="Picture"
           multiline
           value={item.picture}
-          onChange={(e) => setItem({ ...item, description: e.target.value })}
-          required
+          onChange={(e) => setItem({ ...item, picture: e.target.value })}
           fullWidth
           margin="normal"
         />
         <TextField
           label="Category"
           select
-          value={item.category.id}
+          value={item.category}
           onChange={(e) =>
             setItem({
               ...item,
-              category: {
-                id: parseInt(e.target.value),
-                name: "",
-                subcategory: "",
-              },
+              category: parseInt(e.target.value),
             })
           }
           required
           fullWidth
           margin="normal"
         >
-        
           {categories.map((category) => (
             <MenuItem key={category.id} value={category.id}>
               {category.name}

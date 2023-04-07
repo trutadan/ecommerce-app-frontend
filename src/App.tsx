@@ -9,6 +9,7 @@ import ItemDetails from "./components/items/ItemDetails";
 import { AddItem } from "./components/items/AddItem";
 import { MostSoldItems } from "./components/items/MostSoldItems";
 import { AverageAvailableItems } from "./components/items/AverageAvailableItems";
+import { EditItem } from "./components/items/EditItem";
 
 function App() {
   return (
@@ -19,7 +20,7 @@ function App() {
           <Route path="/menu" element={<AppMenu />} />
           <Route path="/items" element={<AllItems />} />
           <Route path="/items/:itemID/details" element={<ItemDetails />} />
-          <Route path="/items/:itemID/edit" element={<ItemDetails />} />
+          <Route path="/items/:itemID/edit" element={<EditItem />} />
           <Route path="/items/:itemID/delete" element={<DeleteItem />} />
           <Route path="/items/add" element={<AddItem />} />
           <Route path="/items/most-sold" element={<MostSoldItems />} />
