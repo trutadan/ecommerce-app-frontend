@@ -14,15 +14,16 @@ import { Link } from "react-router-dom";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React, { useEffect, useState } from "react";
 import { BACKEND_API_URL } from "../../constants";
-import { AverageAvailableItemsDTO } from "../../models/AverageAvailableItemsDTO";
+import { AverageCategoryPriceDTO } from "../../models/AverageCategoryPrice";
 
-export const AverageAvailableItems = () => {
+
+export const AverageCategoryPrice = () => {
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState<AverageAvailableItemsDTO[]>([]);
+  const [items, setItems] = useState<AverageCategoryPriceDTO[]>([]);
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${BACKEND_API_URL}/item/average-available-number`)
+    fetch(`${BACKEND_API_URL}/item-category/average-price`)
       .then((response) => response.json())
       .then((data) => {
         setItems(data);
@@ -38,7 +39,7 @@ export const AverageAvailableItems = () => {
       <IconButton component={Link} sx={{ mr: 3 }} to={`/menu`}>
         <ArrowBackIcon />
       </IconButton>{" "}
-      <h1>Average Available Items</h1>
+      <h1>Average Category Price</h1>
       {loading && <CircularProgress />}
       {!loading && items.length === 0 && <p>No Items found!</p>}
       {!loading && items.length > 0 && (
@@ -47,8 +48,8 @@ export const AverageAvailableItems = () => {
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
-                <TableCell align="right">Title</TableCell>
-                <TableCell align="right">Average Quantity</TableCell>
+                <TableCell align="center">Name</TableCell>
+                <TableCell align="center">Average Price</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -57,10 +58,10 @@ export const AverageAvailableItems = () => {
                   <TableCell component="th" scope="row">
                     {index + 1}
                   </TableCell>
-                  <TableCell component="th" scope="row">
-                    {item.title}
+                  <TableCell align="center" component="th" scope="row">
+                    {item.name}
                   </TableCell>
-                  <TableCell align="right">{item.average_quantity}</TableCell>
+                  <TableCell align="center">{item.average_price}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

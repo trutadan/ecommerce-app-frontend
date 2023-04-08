@@ -1,11 +1,12 @@
+import { Container, TextField, Button, MenuItem, IconButton} from "@mui/material";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Container, TextField, Button, MenuItem } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { BACKEND_API_URL } from "../../constants";
 import { Item } from "../../models/Item";
 import { DetailedItemCategory } from "../../models/ItemCategory";
+
 
 export const AddItem = () => {
   const navigate = useNavigate();
@@ -45,6 +46,9 @@ export const AddItem = () => {
 
   return (
     <Container>
+      <IconButton component={Link} sx={{ mr: 3 }} to={`/items`}>
+        <ArrowBackIcon />
+      </IconButton>{" "}
       <h1>Add Item</h1>
       <form onSubmit={addItem}>
         <TextField

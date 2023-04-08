@@ -8,7 +8,7 @@ import { DeleteItem } from "./components/items/DeleteItem";
 import ItemDetails from "./components/items/ItemDetails";
 import { AddItem } from "./components/items/AddItem";
 import { MostSoldItems } from "./components/items/MostSoldItems";
-import { AverageAvailableItems } from "./components/items/AverageAvailableItems";
+import { AverageCategoryPrice } from "./components/items/AverageCategoryPrice";
 import { EditItem } from "./components/items/EditItem";
 
 function App() {
@@ -25,8 +25,8 @@ function App() {
           <Route path="/items/add" element={<AddItem />} />
           <Route path="/items/most-sold" element={<MostSoldItems />} />
           <Route
-            path="/items/average-available"
-            element={<AverageAvailableItems />}
+            path="/item-categories/average-price"
+            element={<AverageCategoryPrice />}
           />
         </Routes>
       </Router>

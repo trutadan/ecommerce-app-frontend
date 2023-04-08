@@ -1,5 +1,4 @@
 import { ItemCart } from "./ItemCart";
-import { ItemCategory } from "./ItemCategory";
 import { ItemOrder } from "./ItemOrder";
 
 export interface Item {
@@ -16,7 +15,7 @@ export interface Item {
 export interface DetailedItem {
   id: number;
   title: string;
-  category: ItemCategory;
+  category: any;
   description: string;
   picture?: string;
   price: number;

@@ -15,6 +15,7 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { DetailedItem } from "../../models/Item";
 import { BACKEND_API_URL } from "../../constants";
 
+
 const ItemDetails = () => {
   const { itemID } = useParams<{ itemID: string }>();
   const [item, setItem] = useState<DetailedItem | null>(null);
@@ -52,7 +53,7 @@ const ItemDetails = () => {
         <CardContent>
           <IconButton component={Link} sx={{ mr: 3 }} to={`/items`}>
             <ArrowBackIcon />
-          </IconButton>
+          </IconButton>{" "}
           <Typography variant="h4" gutterBottom>
             {item?.title}
           </Typography>

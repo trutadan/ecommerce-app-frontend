@@ -8,10 +8,14 @@ import {
   TableBody,
   CircularProgress,
   Container,
+  IconButton,
 } from "@mui/material";
+import { Link } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { MostSoldItemsDTO } from "../../models/MostSoldItems";
 import { BACKEND_API_URL } from "../../constants";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+
 
 export const MostSoldItems = () => {
   const [loading, setLoading] = useState(false);
@@ -32,6 +36,9 @@ export const MostSoldItems = () => {
 
   return (
     <Container>
+      <IconButton component={Link} sx={{ mr: 3 }} to={`/menu`}>
+        <ArrowBackIcon />
+      </IconButton>{" "}
       <h1>Most Sold Items</h1>
 
       {loading && <CircularProgress />}
@@ -42,8 +49,8 @@ export const MostSoldItems = () => {
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
-                <TableCell align="right">Title</TableCell>
-                <TableCell align="right">Total Pieces Sold</TableCell>
+                <TableCell align="center">Title</TableCell>
+                <TableCell align="center">Total Pieces Sold</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -52,8 +59,8 @@ export const MostSoldItems = () => {
                   <TableCell component="th" scope="row">
                     {index + 1}
                   </TableCell>
-                  <TableCell align="right">{item.title}</TableCell>
-                  <TableCell align="right">{item.total_pieces_sold}</TableCell>
+                  <TableCell align="center">{item.title}</TableCell>
+                  <TableCell align="center">{item.total_pieces_sold}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
