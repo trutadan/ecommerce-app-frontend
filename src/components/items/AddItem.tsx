@@ -23,10 +23,10 @@ export const AddItem = () => {
 
   const [categories, setCategories] = useState<DetailedItemCategory[]>([]);
   useEffect(() => {
-    axios
-      .get<DetailedItemCategory[]>(`${BACKEND_API_URL}/item-category/`)
-      .then((response) => {
-        setCategories(response.data);
+    fetch(`${BACKEND_API_URL}/item-category/`)
+      .then((response) => response.json())
+      .then((data) => {
+        setCategories(data.results);
       })
       .catch((error) => {
         console.log(error);
@@ -35,7 +35,6 @@ export const AddItem = () => {
 
   const addItem = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(item);
     try {
       await axios.post(`${BACKEND_API_URL}/item/`, item);
       navigate("/items");

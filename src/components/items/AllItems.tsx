@@ -10,11 +10,12 @@ import {
   Container,
   IconButton,
   Tooltip,
-  TextField, 
-  FormControl, 
-  InputLabel, 
-  Select, 
-  MenuItem
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Pagination,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -25,51 +26,45 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { BACKEND_API_URL } from "../../constants";
 import { DetailedItem } from "../../models/Item";
 
-
 export const AllItems = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("");
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<DetailedItem[]>([]);
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(100);
+  const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     setLoading(true);
     let url = `${BACKEND_API_URL}/item/?`;
-    
-    if (searchTerm) 
-      url += `search=${searchTerm}`;
-    
-    if (sortOrder) 
-      url += `&ordering=${sortOrder.replace("_", "")}`;
+
+    if (searchTerm) url += `search=${searchTerm}&`;
+
+    if (sortOrder) url += `ordering=${sortOrder.replace("_", "")}&`;
+
+    url += `limit=${pageSize}&offset=${(page - 1) * pageSize}`;
 
     fetch(url)
       .then((response) => response.json())
-      .then((items) => {
-        const categoryRequests = items.map((item: { category: any }) => {
-          return fetch(`${BACKEND_API_URL}/item-category/${item.category}`)
-            .then((response) => response.json())
-            .then((category) => {
-              return { ...item, category };
-            })
-            .catch((error) => {
-              console.error("Error fetching category:", error);
-              return { ...item, category: null };
-            });
-        });
-        Promise.all(categoryRequests)
-          .then((itemsWithCategory) => {
-            setItems(itemsWithCategory);
-            setLoading(false);
-          })
-          .catch((error) => {
-            console.error("Error fetching category:", error);
-          });
+      .then((data) => {
+        setItems(data.results);
+        setTotalCount(data.count);
+        setLoading(false);
       })
       .catch((error) => {
         console.error("Error fetching items:", error);
       });
-  }, [searchTerm, sortOrder]);
-  
+  }, [searchTerm, sortOrder, page, pageSize]);
+
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setPage(value);
+  };
+
+  const handlePageSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newPageSize = parseInt(event.target.value);
+    setPageSize(newPageSize);
+  };
 
   return (
     <Container>
@@ -121,7 +116,6 @@ export const AllItems = () => {
               <TableRow>
                 <TableCell>#</TableCell>
                 <TableCell align="center">Title</TableCell>
-                <TableCell align="center">Category</TableCell>
                 <TableCell align="center">Price</TableCell>
                 <TableCell align="center">Available number</TableCell>
                 <TableCell align="center">Operations</TableCell>
@@ -131,7 +125,7 @@ export const AllItems = () => {
               {items.map((item, index) => (
                 <TableRow key={item.id}>
                   <TableCell component="th" scope="row">
-                    {index + 1}
+                    {(page - 1) * pageSize + index + 1}
                   </TableCell>
                   <TableCell component="th" scope="row">
                     <Link
@@ -141,9 +135,6 @@ export const AllItems = () => {
                       {item.title}
                     </Link>
                   </TableCell>
-                  <TableCell align="center">
-                  {item.category ? (item.category as { name: string }).name : "-"}
-                    </TableCell>
                   <TableCell align="center">{item.price}</TableCell>
                   <TableCell align="center">{item.available_number}</TableCell>
                   <TableCell align="center">
@@ -167,6 +158,7 @@ export const AllItems = () => {
               ))}
             </TableBody>
           </Table>
+          <Pagination count={Math.ceil(totalCount / pageSize)} page={page} onChange={handlePageChange} />
         </TableContainer>
       )}
     </Container>
