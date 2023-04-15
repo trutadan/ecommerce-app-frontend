@@ -39,7 +39,7 @@ export const AllItems = () => {
     setLoading(true);
     let url = `${BACKEND_API_URL}/item/?`;
 
-    if (searchTerm) url += `search=${searchTerm}&`;
+    if (searchTerm) url += `sea rch=${searchTerm}&`;
 
     if (sortOrder) url += `ordering=${sortOrder.replace("_", "")}&`;
 

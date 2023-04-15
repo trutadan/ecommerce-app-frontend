@@ -1,11 +1,12 @@
-import { Container, TextField, Button, MenuItem, IconButton} from "@mui/material";
-import { useEffect, useState } from "react";
+import { Container, TextField, Button, MenuItem, IconButton, Autocomplete} from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { BACKEND_API_URL } from "../../constants";
 import { Item } from "../../models/Item";
 import { DetailedItemCategory } from "../../models/ItemCategory";
+import { debounce } from "lodash";
 
 
 export const AddItem = () => {
@@ -21,18 +22,6 @@ export const AddItem = () => {
     category: 0,
   });
 
-  const [categories, setCategories] = useState<DetailedItemCategory[]>([]);
-  useEffect(() => {
-    fetch(`${BACKEND_API_URL}/item-category/`)
-      .then((response) => response.json())
-      .then((data) => {
-        setCategories(data.results);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
   const addItem = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
@@ -42,6 +31,34 @@ export const AddItem = () => {
       console.log(error);
     }
   };
+
+  const [categories, setCategories] = useState<DetailedItemCategory[]>([]);
+  const fetchSuggestions = async (query: string) => {
+		try {
+			const response = await axios.get<DetailedItemCategory[]>(
+				`${BACKEND_API_URL}/item-category/autocomplete?query=${query}`
+			);
+			const data = await response.data;
+			setCategories(data);
+		} catch (error) {
+			console.error("Error fetching suggestions:", error);
+		}
+	};
+
+	const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
+
+	useEffect(() => {
+		return () => {
+			debouncedFetchSuggestions.cancel();
+		};
+	}, [debouncedFetchSuggestions]);
+
+  const handleInputChange = (event: any, value: any, reason: any) => {
+		console.log("input", value, reason);
+		if (reason === "input") {
+			debouncedFetchSuggestions(value);
+		}
+	};
 
   return (
     <Container>
@@ -118,26 +135,21 @@ export const AddItem = () => {
           fullWidth
           margin="normal"
         />
-        <TextField
-          label="Category"
-          select
-          value={item.category}
-          onChange={(e) =>
-            setItem({
-              ...item,
-              category: parseInt(e.target.value),
-            })
-          }
-          required
-          fullWidth
-          margin="normal"
-        >
-          {categories.map((category) => (
-            <MenuItem key={category.id} value={category.id}>
-              {category.name}
-            </MenuItem>
-          ))}
-        </TextField>
+						<Autocomplete
+							id="category"
+							options={categories}
+							getOptionLabel={(option) => `${option.name} - ${option.subcategory}`}
+							renderInput={(params) => <TextField {...params} label="Category" variant="outlined" />}
+							filterOptions={(x) => x}
+							onInputChange={handleInputChange}
+							onChange={(event, value) => {
+								if (value) {
+									console.log(value);
+									setItem({ ...item, category: value.id });
+								}
+							}}
+						/>
+
         <Button type="submit" variant="contained" color="primary">
           Add Item
         </Button>
