@@ -1,4 +1,11 @@
-import { Container, TextField, Button, IconButton, Autocomplete} from "@mui/material";
+import "./styles.css";
+import {
+  Container,
+  TextField,
+  Button,
+  IconButton,
+  Autocomplete,
+} from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,11 +14,12 @@ import { BACKEND_API_URL } from "../../constants";
 import { DetailedItem } from "../../models/Item";
 import { DetailedItemCategory } from "../../models/ItemCategory";
 import { debounce } from "lodash";
-
+import { ToastContainer, toast } from "react-toastify";
 
 export const EditItem = () => {
   const navigate = useNavigate();
-  const { itemID: itemId } = useParams<{itemID: string}>();
+
+  const { itemID: itemId } = useParams<{ itemID: string }>();
   const [item, setItem] = useState<DetailedItem>({
     id: 0,
     title: "",
@@ -21,8 +29,11 @@ export const EditItem = () => {
     total_number: 0,
     description: "",
     picture: undefined,
-    category: 0,
+    category: null,
   });
+
+  const [originalCategory, setOriginalCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<DetailedItemCategory[]>([]);
 
   useEffect(() => {
     const fetchItem = async () => {
@@ -31,25 +42,55 @@ export const EditItem = () => {
           `${BACKEND_API_URL}/item/${itemId}`
         );
         setItem(response.data);
+        setOriginalCategory(response.data.category);
       } catch (error) {
         console.log(error);
       }
     };
-
     fetchItem();
   }, [itemId]);
 
   const editItem = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     try {
-      await axios.put(`${BACKEND_API_URL}/item/${itemId}/`, item);
+      if (item.price <= 0) {
+        throw new Error("Price must be greater than 0!");
+      }
+      if (item.discount_price && item.discount_price < 0) {
+        throw new Error("Discount price must be greater than 0!");
+      }
+      if (item.discount_price && item.discount_price > item.price) {
+        throw new Error(
+          "Discount price can't be greater than the regular price!"
+        );
+      }
+      if (item.available_number < 0) {
+        throw new Error("Available Number must be greater than 0!");
+      }
+      if (item.total_number < 0) {
+        throw new Error("Total Number must be greater than 0!");
+      }
+      if (item.available_number > item.total_number) {
+        throw new Error(
+          "Available number of items can't be greater than total number!"
+        );
+      }
+
+      const response = await axios.put(
+        `${BACKEND_API_URL}/item/${itemId}/`,
+        item
+      );
+      if (response.status < 200 || response.status >= 300) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
       navigate("/items");
     } catch (error) {
+      toast.error((error as { message: string }).message);
       console.log(error);
     }
   };
 
-  const [categories, setCategories] = useState<DetailedItemCategory[]>([]);
   const fetchSuggestions = async (query: string) => {
     try {
       const response = await axios.get<DetailedItemCategory[]>(
@@ -62,7 +103,10 @@ export const EditItem = () => {
     }
   };
 
-  const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
+  const debouncedFetchSuggestions = useCallback(
+    debounce(fetchSuggestions, 500),
+    []
+  );
 
   useEffect(() => {
     return () => {
@@ -75,14 +119,17 @@ export const EditItem = () => {
       debouncedFetchSuggestions(value);
     }
   };
-  
+
   const handleCategoryChange = (event: any, value: any) => {
     if (value) {
       console.log(value);
       setItem({ ...item, category: value.id });
+    } else {
+      console.log(value);
+      setItem({ ...item, category: originalCategory });
     }
   };
-  
+
   return (
     <Container>
       <IconButton component={Link} sx={{ mr: 3 }} to={`/items`}>
@@ -169,11 +216,20 @@ export const EditItem = () => {
           onInputChange={handleInputChange}
           onChange={handleCategoryChange}
           value={categories.find((c) => c.id === item.category)}
+          classes={{ listbox: "options-container" }}
         />
-        <Button type="submit" variant="contained" color="primary">
+
+        <ToastContainer />
+
+        <Button
+          type="submit"
+          variant="contained"
+          color="primary"
+          sx={{ mt: 3, mb: 3 }}
+        >
           Edit Item
         </Button>
       </form>
     </Container>
   );
-          };
+};

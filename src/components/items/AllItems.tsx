@@ -16,6 +16,9 @@ import {
   Select,
   MenuItem,
   Pagination,
+  Typography,
+  Slider,
+  Box,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -29,17 +32,21 @@ import { DetailedItem } from "../../models/Item";
 export const AllItems = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("");
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000);
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<DetailedItem[]>([]);
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(100);
+  const [pageSize] = useState(100);
   const [totalCount, setTotalCount] = useState(0);
 
   useEffect(() => {
     setLoading(true);
-    let url = `${BACKEND_API_URL}/item/?`;
+    let url = `${BACKEND_API_URL}/item/`;
 
-    if (searchTerm) url += `sea rch=${searchTerm}&`;
+    url += `?price__gte=${minPrice}&price__lte=${maxPrice}&`;
+
+    if (searchTerm) url += `search=${searchTerm}&`;
 
     if (sortOrder) url += `ordering=${sortOrder.replace("_", "")}&`;
 
@@ -55,59 +62,97 @@ export const AllItems = () => {
       .catch((error) => {
         console.error("Error fetching items:", error);
       });
-  }, [searchTerm, sortOrder, page, pageSize]);
+  }, [minPrice, maxPrice, searchTerm, sortOrder, page, pageSize]);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    value: number
+  ) => {
     setPage(value);
   };
 
-  const handlePageSizeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newPageSize = parseInt(event.target.value);
-    setPageSize(newPageSize);
+  const handlePriceFilterChange = (
+    event: Event,
+    newValue: number | number[]
+  ) => {
+    if (Array.isArray(newValue)) {
+      setMinPrice(newValue[0]);
+      setMaxPrice(newValue[1]);
+    }
   };
 
   return (
-    <Container>
+    <Container style={{ backgroundColor: "#4e4e50" }}>
       <IconButton component={Link} sx={{ mr: 3 }} to={`/menu`}>
         <ArrowBackIcon />
       </IconButton>
       <h1>All Items</h1>
-      <TextField
-        label="Search items"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        sx={{ mr: 3 }}
-      />
-      <FormControl sx={{ minWidth: '100px' }}>
-        <InputLabel id="sort-order-label">Sort by</InputLabel>
-        <Select
-          labelId="sort-order-label"
-          id="sort-order"
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value)}
-        >
-          <MenuItem value="">None</MenuItem>
-          <MenuItem value="price">Price: Low to High</MenuItem>
-          <MenuItem value="-price">Price: High to Low</MenuItem>
-          <MenuItem value="discount_price">Discount Price: Low to High</MenuItem>
-          <MenuItem value="-discount_price">Discount Price: High to Low</MenuItem>
-        </Select>
-      </FormControl>
+
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <Box sx={{ display: "flex", alignItems: "center" }}>
+          <TextField
+            label="Search items"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            sx={{ mr: 3 }}
+          />
+
+          <FormControl sx={{ minWidth: "100px" }}>
+            <InputLabel id="sort-order-label">Sort by</InputLabel>
+            <Select
+              labelId="sort-order-label"
+              id="sort-order"
+              value={sortOrder}
+              onChange={(e) => setSortOrder(e.target.value)}
+            >
+              <MenuItem value="">None</MenuItem>
+              <MenuItem value="price">Price: Low to High</MenuItem>
+              <MenuItem value="-price">Price: High to Low</MenuItem>
+              <MenuItem value="discount_price">
+                Discount Price: Low to High
+              </MenuItem>
+              <MenuItem value="-discount_price">
+                Discount Price: High to Low
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
+
+        <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Typography sx={{ mr: 3, mt: 0.5 }}>Select Price Range:</Typography>
+          <Slider
+            min={0}
+            max={1000}
+            step={1}
+            value={[minPrice, maxPrice]}
+            valueLabelDisplay="auto"
+            aria-labelledby="price-range-slider"
+            sx={{ width: "300px" }}
+            onChange={handlePriceFilterChange}
+          />
+        </Box>
+      </Box>
 
       {loading && <CircularProgress />}
       {!loading && items.length === 0 && <p>No Items found!</p>}
       {!loading && (
-              <div style={{ display: "flex" }}>
-                <IconButton
-                  component={Link}
-                  sx={{ mr: 3, flexGrow: 1 }}
-                  to={`/items/add`}
-                >
-                  <Tooltip title="Add a new Item" arrow>
-                    <AddIcon color="primary" />
-                  </Tooltip>
-                </IconButton>
-              </div>
+        <div style={{ display: "flex" }}>
+          <IconButton
+            component={Link}
+            sx={{ mr: 3, flexGrow: 1 }}
+            to={`/items/add`}
+          >
+            <Tooltip title="Add a new Item" arrow>
+              <AddIcon color="primary" />
+            </Tooltip>
+          </IconButton>
+        </div>
       )}
       {!loading && items.length > 0 && (
         <TableContainer component={Paper}>
@@ -116,8 +161,11 @@ export const AllItems = () => {
               <TableRow>
                 <TableCell>#</TableCell>
                 <TableCell align="center">Title</TableCell>
+                <TableCell align="center">Category</TableCell>
                 <TableCell align="center">Price</TableCell>
                 <TableCell align="center">Available number</TableCell>
+                <TableCell align="center">Orders count</TableCell>
+                <TableCell align="center">Refunds requested</TableCell>
                 <TableCell align="center">Operations</TableCell>
               </TableRow>
             </TableHead>
@@ -135,8 +183,13 @@ export const AllItems = () => {
                       {item.title}
                     </Link>
                   </TableCell>
+                  <TableCell align="center">{item.category.name}</TableCell>
                   <TableCell align="center">{item.price}</TableCell>
                   <TableCell align="center">{item.available_number}</TableCell>
+                  <TableCell align="center">{item.orders_count}</TableCell>
+                  <TableCell align="center">
+                    {item.refunds_requested_count}
+                  </TableCell>
                   <TableCell align="center">
                     <IconButton
                       component={Link}
@@ -158,7 +211,11 @@ export const AllItems = () => {
               ))}
             </TableBody>
           </Table>
-          <Pagination count={Math.ceil(totalCount / pageSize)} page={page} onChange={handlePageChange} />
+          <Pagination
+            count={Math.ceil(totalCount / pageSize)}
+            page={page}
+            onChange={handlePageChange}
+          />
         </TableContainer>
       )}
     </Container>

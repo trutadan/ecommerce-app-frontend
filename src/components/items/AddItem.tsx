@@ -1,4 +1,11 @@
-import { Container, TextField, Button, MenuItem, IconButton, Autocomplete} from "@mui/material";
+import "./styles.css";
+import {
+  Container,
+  TextField,
+  Button,
+  IconButton,
+  Autocomplete,
+} from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,6 +15,8 @@ import { Item } from "../../models/Item";
 import { DetailedItemCategory } from "../../models/ItemCategory";
 import { debounce } from "lodash";
 
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const AddItem = () => {
   const navigate = useNavigate();
@@ -25,40 +34,71 @@ export const AddItem = () => {
   const addItem = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await axios.post(`${BACKEND_API_URL}/item/`, item);
-      navigate("/items");
+      if (item.price <= 0) {
+        throw new Error("Price must be greater than 0!");
+      }
+      if (item.discount_price && item.discount_price < 0) {
+        throw new Error("Discount price must be greater than 0!");
+      }
+      if (item.discount_price && item.discount_price > item.price) {
+        throw new Error(
+          "Discount price can't be greater than the regular price!"
+        );
+      }
+      if (item.available_number < 0) {
+        throw new Error("Available Number must be greater than 0!");
+      }
+      if (item.total_number < 0) {
+        throw new Error("Total Number must be greater than 0!");
+      }
+      if (item.available_number > item.total_number) {
+        throw new Error(
+          "Available number of items can't be greater than total number!"
+        );
+      }
+
+      const response = await axios.post(`${BACKEND_API_URL}/item/`, item);
+      if (response.status < 200 || response.status >= 300) {
+        throw new Error("An error occurred while adding the item!");
+      } else {
+        navigate("/items");
+      }
     } catch (error) {
+      toast.error((error as { message: string }).message);
       console.log(error);
     }
   };
 
   const [categories, setCategories] = useState<DetailedItemCategory[]>([]);
   const fetchSuggestions = async (query: string) => {
-		try {
-			const response = await axios.get<DetailedItemCategory[]>(
-				`${BACKEND_API_URL}/item-category/autocomplete?query=${query}`
-			);
-			const data = await response.data;
-			setCategories(data);
-		} catch (error) {
-			console.error("Error fetching suggestions:", error);
-		}
-	};
+    try {
+      const response = await axios.get<DetailedItemCategory[]>(
+        `${BACKEND_API_URL}/item-category/autocomplete?query=${query}`
+      );
+      const data = await response.data;
+      setCategories(data);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+  };
 
-	const debouncedFetchSuggestions = useCallback(debounce(fetchSuggestions, 500), []);
+  const debouncedFetchSuggestions = useCallback(
+    debounce(fetchSuggestions, 500),
+    []
+  );
 
-	useEffect(() => {
-		return () => {
-			debouncedFetchSuggestions.cancel();
-		};
-	}, [debouncedFetchSuggestions]);
+  useEffect(() => {
+    return () => {
+      debouncedFetchSuggestions.cancel();
+    };
+  }, [debouncedFetchSuggestions]);
 
   const handleInputChange = (event: any, value: any, reason: any) => {
-		console.log("input", value, reason);
-		if (reason === "input") {
-			debouncedFetchSuggestions(value);
-		}
-	};
+    console.log("input", value, reason);
+    if (reason === "input") {
+      debouncedFetchSuggestions(value);
+    }
+  };
 
   return (
     <Container>
@@ -103,7 +143,6 @@ export const AddItem = () => {
           onChange={(e) =>
             setItem({ ...item, available_number: parseFloat(e.target.value) })
           }
-          required
           fullWidth
           margin="normal"
         />
@@ -114,7 +153,6 @@ export const AddItem = () => {
           onChange={(e) =>
             setItem({ ...item, total_number: parseFloat(e.target.value) })
           }
-          required
           fullWidth
           margin="normal"
         />
@@ -135,20 +173,30 @@ export const AddItem = () => {
           fullWidth
           margin="normal"
         />
-						<Autocomplete
-							id="category"
-							options={categories}
-							getOptionLabel={(option) => `${option.name} - ${option.subcategory}`}
-							renderInput={(params) => <TextField {...params} label="Category" variant="outlined" />}
-							filterOptions={(x) => x}
-							onInputChange={handleInputChange}
-							onChange={(event, value) => {
-								if (value) {
-									console.log(value);
-									setItem({ ...item, category: value.id });
-								}
-							}}
-						/>
+        <Autocomplete
+          id="category"
+          options={categories}
+          getOptionLabel={(option) => `${option.name} - ${option.subcategory}`}
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Category"
+              variant="outlined"
+              required
+            />
+          )}
+          filterOptions={(x) => x}
+          onInputChange={handleInputChange}
+          onChange={(event, value) => {
+            if (value) {
+              console.log(value);
+              setItem({ ...item, category: value.id });
+            }
+          }}
+          classes={{ listbox: "options-container" }}
+        />
+
+        <ToastContainer />
 
         <Button type="submit" variant="contained" color="primary">
           Add Item
