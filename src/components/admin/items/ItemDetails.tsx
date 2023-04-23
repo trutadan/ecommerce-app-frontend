@@ -12,9 +12,8 @@ import {
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { DetailedItem } from "../../models/Item";
-import { BACKEND_API_URL } from "../../constants";
-
+import { DetailedItem } from "../../../models/Item";
+import { BACKEND_API_URL } from "../../../constants";
 
 const ItemDetails = () => {
   const { itemID } = useParams<{ itemID: string }>();
@@ -109,7 +108,6 @@ const ItemDetails = () => {
           ) : (
             <Typography variant="body1">-</Typography>
           )}
-
           <Typography
             variant="subtitle1"
             gutterBottom

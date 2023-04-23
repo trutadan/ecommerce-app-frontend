@@ -11,22 +11,21 @@ import {
   IconButton,
 } from "@mui/material";
 import { Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { MostSoldItemsDTO } from "../../../models/MostSoldItems";
+import { BACKEND_API_URL } from "../../../constants";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import React, { useEffect, useState } from "react";
-import { BACKEND_API_URL } from "../../constants";
-import { AverageCategoryPriceDTO } from "../../models/AverageCategoryPrice";
 
-
-export const AverageCategoryPrice = () => {
+export const MostSoldItems = () => {
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState<AverageCategoryPriceDTO[]>([]);
+  const [mostSoldItems, setMostSoldItems] = useState<MostSoldItemsDTO[]>([]);
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${BACKEND_API_URL}/item-category/average-price`)
+    fetch(`${BACKEND_API_URL}/item/most-sold/`)
       .then((response) => response.json())
       .then((data) => {
-        setItems(data);
+        setMostSoldItems(data.results);
         setLoading(false);
       })
       .catch((error) => {
@@ -39,29 +38,27 @@ export const AverageCategoryPrice = () => {
       <IconButton component={Link} sx={{ mr: 3 }} to={`/menu`}>
         <ArrowBackIcon />
       </IconButton>{" "}
-      <h1>Average Category Price</h1>
+      <h1>Most Sold Items</h1>
       {loading && <CircularProgress />}
-      {!loading && items.length === 0 && <p>No Items found!</p>}
-      {!loading && items.length > 0 && (
+      {!loading && mostSoldItems.length === 0 && <p>No items found!</p>}
+      {!loading && mostSoldItems.length > 0 && (
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>#</TableCell>
-                <TableCell align="center">Name</TableCell>
-                <TableCell align="center">Average Price</TableCell>
+                <TableCell align="center">Title</TableCell>
+                <TableCell align="center">Total Pieces Sold</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {items.map((item, index) => (
+              {mostSoldItems.map((item, index) => (
                 <TableRow key={item.id}>
                   <TableCell component="th" scope="row">
                     {index + 1}
                   </TableCell>
-                  <TableCell align="center" component="th" scope="row">
-                    {item.name}
-                  </TableCell>
-                  <TableCell align="center">{item.average_price}</TableCell>
+                  <TableCell align="center">{item.title}</TableCell>
+                  <TableCell align="center">{item.total_pieces_sold}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

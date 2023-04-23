@@ -1,4 +1,4 @@
-import "./styles.css";
+import "../styles.css";
 import {
   Container,
   TextField,
@@ -10,11 +10,10 @@ import { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { BACKEND_API_URL } from "../../constants";
-import { Item } from "../../models/Item";
-import { DetailedItemCategory } from "../../models/ItemCategory";
+import { BACKEND_API_URL } from "../../../constants";
+import { Item } from "../../../models/Item";
+import { DetailedItemCategory } from "../../../models/ItemCategory";
 import { debounce } from "lodash";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
