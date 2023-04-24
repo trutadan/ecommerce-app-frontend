@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import { DetailedItem } from "../../models/Item";
 import { handleAddItemToCart } from "../user/items/AddItemToCart";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import "../../../public/image_missing.png";
+import image_missing from "../../assets/images/image_missing.png";
 
 export const Home = () => {
   const [loading, setLoading] = useState(false);
@@ -81,7 +81,7 @@ export const Home = () => {
                 >
                   <Link to={`/items/${item.id}/details`}>
                     <img
-                      src={item.picture ? item.picture : "/image_missing.png"}
+                      src={item.picture ? item.picture : image_missing}
                       alt={"No image"}
                     />
                     <Typography variant="h6">{item.title}</Typography>

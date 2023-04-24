@@ -12,6 +12,9 @@ import { AverageCategoryPrice } from "../admin/items/AverageCategoryPrice";
 import { EditItem } from "../admin/items/EditItem";
 import { UserAllItems } from "../user/items/AllItems";
 import { UserItemDetails } from "../user/items/ItemDetails";
+import { LoginPage } from "./Login";
+import { RegisterPage } from "./Register";
+import { RoleSelector } from "./RoleSelector";
 
 function App() {
   return (
@@ -19,8 +22,10 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/roles" element={<AdminMenu />} />
-          <Route path="/menu" element={<AdminMenu />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/roles" element={<RoleSelector />} />
+          <Route path="/admin-menu" element={<AdminMenu />} />
           <Route path="/admin/items" element={<AllItems />} />
           <Route
             path="/admin/items/:itemID/details"

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AppBar, Toolbar, Button, Avatar } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { Link } from "react-router-dom";
-import "../../../public/logo.png";
+import logo from "../../assets/images/logo.png";
 import axios from "axios";
 import { BACKEND_API_URL } from "../../constants";
 
@@ -65,7 +65,7 @@ export const NavigationBar = () => {
       <AppBar position="fixed" style={{ top: 0 }}>
         <Toolbar>
           <Link to="/" style={styles.logo}>
-            <img src={"logo.png"} alt="Logo" height="40" />
+            <img src={logo} alt="Logo" height="40" />
           </Link>
           <div style={styles.items}>
             <Link to="/items">
