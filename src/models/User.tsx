@@ -11,3 +11,15 @@ export interface User {
   address?: UserAddress;
   profile?: UserProfile;
 }
+
+export interface UserInformation {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  username: string;
+  created_at: string;
+  is_active: boolean;
+  address?: UserAddress;
+  profile?: UserProfile;
+}

@@ -30,7 +30,9 @@ export const NavigationBar = () => {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const response = await axios.get(`${BACKEND_API_URL}/user/`);
+        const response = await axios.get(`${BACKEND_API_URL}/user/`, {
+          withCredentials: true,
+        });
         setIsAuthenticated(true);
         setProfilePicture(response.data.profile?.picture);
       } catch (error) {

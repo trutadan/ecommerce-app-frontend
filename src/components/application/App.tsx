@@ -13,8 +13,10 @@ import { EditItem } from "../admin/items/EditItem";
 import { UserAllItems } from "../user/items/AllItems";
 import { UserItemDetails } from "../user/items/ItemDetails";
 import { LoginPage } from "./Login";
-import { RegisterPage } from "./Register";
 import { RoleSelector } from "./RoleSelector";
+import RegisterPage from "./Register";
+import ConfirmRegisterPage from "./ConfirmAccount";
+import { ProfilePage } from "./ProfilePage";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/confirm-account" element={<ConfirmRegisterPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/roles" element={<RoleSelector />} />
           <Route path="/admin-menu" element={<AdminMenu />} />
           <Route path="/admin/items" element={<AllItems />} />

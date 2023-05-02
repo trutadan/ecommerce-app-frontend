@@ -2,13 +2,15 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Box, Button, Grid, TextField } from "@mui/material";
 import { PersonAdd } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { BACKEND_API_URL } from "../../constants";
 import logo from "../../assets/images/logo.png";
 
 export const LoginPage = () => {
+  const navigate = useNavigate();
+
   const [usernameOrEmail, setUsernameOrEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -29,19 +31,27 @@ export const LoginPage = () => {
 
   const handleLoginSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     axios
-      .post(`${BACKEND_API_URL}/login/`, {
-        user: usernameOrEmail,
-        password: password,
-      })
-      .then((response) => {
-        document.cookie = `jwt=${response.data.jwt}; path=/`;
-        window.location.href = "/";
+      .post(
+        `${BACKEND_API_URL}/login/`,
+        {
+          user: usernameOrEmail,
+          password: password,
+        },
+        {
+          withCredentials: true,
+        }
+      )
+      .then(() => {
+        navigate("/");
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
+          console.log(error);
           toast.error("Incorrect username/email or password.");
         } else {
+          console.log(error);
           toast.error("Something went wrong. Please try again later.");
         }
       });

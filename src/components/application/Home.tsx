@@ -70,7 +70,7 @@ export const Home = () => {
                 <Box
                   sx={{
                     height: "300px",
-                    width: "450px",
+                    width: "445px",
                     display: "flex",
                     flexDirection: "column",
                     alignItems: "center",
