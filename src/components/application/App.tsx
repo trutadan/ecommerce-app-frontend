@@ -2,21 +2,21 @@ import "./App.css";
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Home } from "./Home";
-import { AdminMenu } from "../admin/AdminMenu";
-import { AllItems } from "../admin/items/AllItems";
-import { DeleteItem } from "../admin/items/DeleteItem";
-import ItemDetails from "../admin/items/ItemDetails";
-import { AddItem } from "../admin/items/AddItem";
-import { MostSoldItems } from "../admin/items/MostSoldItems";
-import { AverageCategoryPrice } from "../admin/items/AverageCategoryPrice";
-import { EditItem } from "../admin/items/EditItem";
+import { AllItems } from "../staff/items/AllItems";
+import { DeleteItem } from "../staff/items/DeleteItem";
+import ItemDetails from "../staff/items/ItemDetails";
+import { AddItem } from "../staff/items/AddItem";
+import { MostSoldItems } from "../staff/items/MostSoldItems";
+import { AverageCategoryPrice } from "../staff/items/AverageCategoryPrice";
+import { EditItem } from "../staff/items/EditItem";
 import { UserAllItems } from "../user/items/AllItems";
 import { UserItemDetails } from "../user/items/ItemDetails";
 import { LoginPage } from "./Login";
 import { RoleSelector } from "./RoleSelector";
 import RegisterPage from "./Register";
 import ConfirmRegisterPage from "./ConfirmAccount";
-import { ProfilePage } from "./ProfilePage";
+import { ProfilePage } from "./UserProfile";
+import { StaffMenu } from "../staff/StaffMenu";
 
 function App() {
   return (
@@ -29,22 +29,22 @@ function App() {
           <Route path="/confirm-account" element={<ConfirmRegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/roles" element={<RoleSelector />} />
-          <Route path="/admin-menu" element={<AdminMenu />} />
-          <Route path="/admin/items" element={<AllItems />} />
-          <Route
-            path="/admin/items/:itemID/details"
-            element={<ItemDetails />}
-          />
-          <Route path="/admin/items/:itemID/edit" element={<EditItem />} />
-          <Route path="/admin/items/:itemID/delete" element={<DeleteItem />} />
-          <Route path="/admin/items/add" element={<AddItem />} />
-          <Route path="/admin/items/most-sold" element={<MostSoldItems />} />
-          <Route
-            path="/admin/item-categories/average-price"
-            element={<AverageCategoryPrice />}
-          />
           <Route path="/items" element={<UserAllItems />} />
           <Route path="/items/:itemID/details" element={<UserItemDetails />} />
+          <Route path="/staff/menu" element={<StaffMenu />} />
+          <Route path="/staff/items" element={<AllItems />} />
+          <Route
+            path="/staff/items/:itemID/details"
+            element={<ItemDetails />}
+          />
+          <Route path="/staff/items/:itemID/edit" element={<EditItem />} />
+          <Route path="/staff/items/:itemID/delete" element={<DeleteItem />} />
+          <Route path="/staff/items/add" element={<AddItem />} />
+          <Route path="/staff/items/most-sold" element={<MostSoldItems />} />
+          <Route
+            path="/staff/item-categories/average-price"
+            element={<AverageCategoryPrice />}
+          />
         </Routes>
       </Router>
     </React.Fragment>

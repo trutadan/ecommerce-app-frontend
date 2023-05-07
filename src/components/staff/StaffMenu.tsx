@@ -1,16 +1,13 @@
 import { Link } from "react-router-dom";
 import "./styles.css";
 
-export const AdminMenu = () => {
+export const StaffMenu = () => {
   return (
     <div className="container">
       <h1>Navigate as</h1>
       <ul>
         <li>
-          <Link to="/admin-menu">Admin</Link>
-        </li>
-        <li>
-          <Link to="/moderator-menu">Moderator</Link>
+          <Link to="/staff/menu">Staff</Link>
         </li>
         <li>
           <Link to="/">User</Link>
