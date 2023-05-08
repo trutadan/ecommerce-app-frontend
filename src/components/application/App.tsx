@@ -12,24 +12,34 @@ import { EditItem } from "../staff/items/EditItem";
 import { UserAllItems } from "../user/items/AllItems";
 import { UserItemDetails } from "../user/items/ItemDetails";
 import { LoginPage } from "./Login";
-import { RoleSelector } from "./RoleSelector";
+import { NavigationSelector } from "./NavigationSelector";
 import RegisterPage from "./Register";
 import ConfirmRegisterPage from "./ConfirmAccount";
 import { ProfilePage } from "./UserProfile";
+import MissingPage from "./MissingPage";
+import UnauthorizedPage from "./UnauthorizedPage";
 import { StaffMenu } from "../staff/StaffMenu";
+import { EditUserRole } from "../staff/users/EditUserRole";
+import { AllUserRoles } from "../staff/users/AllUserRoles";
 
 function App() {
   return (
     <React.Fragment>
       <Router>
         <Routes>
+          {/* public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/items" element={<UserAllItems />} />
+          <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
+          {/* any user */}
           <Route path="/confirm-account" element={<ConfirmRegisterPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/roles" element={<RoleSelector />} />
-          <Route path="/items" element={<UserAllItems />} />
+
+          {/* staff */}
+          <Route path="/navigation" element={<NavigationSelector />} />
           <Route path="/items/:itemID/details" element={<UserItemDetails />} />
           <Route path="/staff/menu" element={<StaffMenu />} />
           <Route path="/staff/items" element={<AllItems />} />
@@ -45,6 +55,16 @@ function App() {
             path="/staff/item-categories/average-price"
             element={<AverageCategoryPrice />}
           />
+
+          {/* admin */}
+          <Route path="/admin/roles" element={<AllUserRoles />} />
+          <Route
+            path="/admin/roles/:userID/edit"
+            element={<EditUserRole />}
+          />
+
+          {/* catch all */}
+          <Route path="*" element={<MissingPage />} />
         </Routes>
       </Router>
     </React.Fragment>

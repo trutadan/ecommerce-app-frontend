@@ -23,3 +23,10 @@ export interface UserInformation {
   address?: UserAddress;
   profile?: UserProfile;
 }
+
+export interface UserRoles {
+  id: number;
+  username: string;
+  email: string;
+  role: string;
+}

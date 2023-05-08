@@ -43,8 +43,11 @@ export const LoginPage = () => {
           withCredentials: true,
         }
       )
-      .then(() => {
-        navigate("/");
+      .then((response) => {
+        if (response.data.role !== "REGULAR")
+          navigate("/navigation")
+        else
+          navigate("/");
       })
       .catch((error) => {
         if (error.response && error.response.status === 401) {
