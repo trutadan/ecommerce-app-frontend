@@ -23,8 +23,9 @@ export const EditUserRole = () => {
   const [selectedRole, setSelectedRole] = useState("");
 
   useEffect(() => {
-    axios
-      .get(`${BACKEND_API_URL}/user-roles/${userId}/`)
+    axios.get(`${BACKEND_API_URL}/user-roles/${userId}/`, {
+        withCredentials: true
+      })      
       .then((response) => {
         setUser(response.data);
         setSelectedRole(response.data.role);
@@ -39,12 +40,13 @@ export const EditUserRole = () => {
   };
 
   const handleUpdateClick = () => {
-    axios
-      .put(`${BACKEND_API_URL}/user-roles/${userId}/`, {
+    axios.put(`${BACKEND_API_URL}/user-roles/${userId}/`, {
         username: user?.username,
         email: user?.email,
         role: selectedRole,
-      })
+      }, {
+        withCredentials: true
+      })      
       .then((response) => {
         setUser(response.data);
         console.log("User role updated");

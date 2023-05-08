@@ -24,7 +24,9 @@ export const AllUserRoles = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await axios.get(`${BACKEND_API_URL}/user-roles/`);
+        const response = await axios.get(`${BACKEND_API_URL}/user-roles/`, {
+            withCredentials: true
+          });
         setUsers(response.data);
       } catch (error) {
         console.error(error);
