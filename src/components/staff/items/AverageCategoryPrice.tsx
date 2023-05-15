@@ -15,6 +15,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import React, { useEffect, useState } from "react";
 import { BACKEND_API_URL } from "../../../constants";
 import { AverageCategoryPriceDTO } from "../../../models/AverageCategoryPrice";
+import axios from "axios";
 
 export const AverageCategoryPrice = () => {
   const [loading, setLoading] = useState(false);
@@ -22,10 +23,12 @@ export const AverageCategoryPrice = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${BACKEND_API_URL}/item-category/average-price`)
-      .then((response) => response.json())
-      .then((data) => {
-        setItems(data);
+    axios
+      .get(`${BACKEND_API_URL}/item-category/average-price`, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        setItems(response.data);
         setLoading(false);
       })
       .catch((error) => {

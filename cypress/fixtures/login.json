@@ -1,0 +1,17 @@
+{
+  "regularUser": {
+    "email": "johndoe@example.com",
+    "password": "Password123!",
+    "role": "REGULAR"
+  },
+  "moderatorUser": {
+    "email": "kaylesinn@example.com",
+    "password": "Password123!",
+    "role": "MODERATOR"
+  },
+  "adminUser": {
+    "email": "admin@example.com",
+    "password": "Password123!",
+    "role": "ADMIN"
+  }
+}

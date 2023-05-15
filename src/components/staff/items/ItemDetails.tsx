@@ -24,7 +24,9 @@ const ItemDetails = () => {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const response = await axios.get(`${BACKEND_API_URL}/item/${itemID}`);
+        const response = await axios.get(`${BACKEND_API_URL}/item/${itemID}`, {
+          withCredentials: true,
+        });
         const item = response.data;
         setItem(item);
         setLoading(false);

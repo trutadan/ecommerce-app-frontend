@@ -39,7 +39,10 @@ export const EditItem = () => {
     const fetchItem = async () => {
       try {
         const response = await axios.get<DetailedItem>(
-          `${BACKEND_API_URL}/item/${itemId}`
+          `${BACKEND_API_URL}/item/${itemId}`,
+          {
+            withCredentials: true,
+          }
         );
         setItem(response.data);
         setOriginalCategory(response.data.category);
@@ -79,7 +82,10 @@ export const EditItem = () => {
 
       const response = await axios.put(
         `${BACKEND_API_URL}/item/${itemId}/`,
-        item
+        item,
+        {
+          withCredentials: true,
+        }
       );
       if (response.status < 200 || response.status >= 300) {
         throw new Error(`Request failed with status ${response.status}`);
@@ -94,7 +100,10 @@ export const EditItem = () => {
   const fetchSuggestions = async (query: string) => {
     try {
       const response = await axios.get<DetailedItemCategory[]>(
-        `${BACKEND_API_URL}/item-category/autocomplete?query=${query}`
+        `${BACKEND_API_URL}/item-category/autocomplete?query=${query}`,
+        {
+          withCredentials: true,
+        }
       );
       const data = await response.data;
       setCategories(data);

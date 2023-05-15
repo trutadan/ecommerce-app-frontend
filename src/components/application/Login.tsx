@@ -44,13 +44,11 @@ export const LoginPage = () => {
         }
       )
       .then((response) => {
-        if (response.data.role !== "REGULAR")
-          navigate("/navigation")
-        else
-          navigate("/");
+        if (response.data.role !== "REGULAR") navigate("/navigation");
+        else navigate("/");
       })
       .catch((error) => {
-        if (error.response && error.response.status === 401) {
+        if (error.response && error.response.status === 403) {
           console.log(error);
           toast.error("Incorrect username/email or password.");
         } else {
@@ -70,6 +68,8 @@ export const LoginPage = () => {
             flexDirection: "column",
             alignItems: "center",
             marginTop: 5,
+            maxWidth: "300px",
+            width: "100%",
           }}
           onSubmit={handleLoginSubmit}
         >
@@ -91,20 +91,22 @@ export const LoginPage = () => {
           </Box>
 
           <TextField
-            style={{ marginBottom: 2 }}
+            style={{ marginBottom: 16 }}
             label="Username/Email"
             variant="outlined"
             fullWidth
             value={usernameOrEmail}
+            name="usernameOrEmail"
             onChange={handleUsernameOrEmailChange}
           />
           <TextField
-            style={{ marginBottom: 2 }}
+            style={{ marginBottom: 16 }}
             type={showPassword ? "text" : "password"}
             label="Password"
             variant="outlined"
             fullWidth
             value={password}
+            name="password"
             onChange={handlePasswordChange}
             InputProps={{
               endAdornment: (
@@ -115,7 +117,7 @@ export const LoginPage = () => {
             }}
           />
           <Button
-            style={{ marginTop: 2 }}
+            style={{ marginTop: 8 }}
             type="submit"
             variant="contained"
             color="primary"
@@ -123,7 +125,7 @@ export const LoginPage = () => {
           >
             Log in
           </Button>
-          <p>Don't have an account?</p>
+          <p style={{ marginBottom: 8 }}>Don't have an account?</p>
           <Link to="/register">
             <Button startIcon={<PersonAdd />} color="primary">
               Register

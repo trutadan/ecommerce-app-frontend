@@ -56,7 +56,9 @@ export const AddItem = () => {
         );
       }
 
-      const response = await axios.post(`${BACKEND_API_URL}/item/`, item);
+      const response = await axios.post(`${BACKEND_API_URL}/item/`, item, {
+        withCredentials: true,
+      });
       if (response.status < 200 || response.status >= 300) {
         throw new Error("An error occurred while adding the item!");
       } else {
@@ -72,8 +74,9 @@ export const AddItem = () => {
   const fetchSuggestions = async (query: string) => {
     try {
       const response = await axios.get<DetailedItemCategory[]>(
-        `${BACKEND_API_URL}/item-category/autocomplete?query=${query}`
-      );
+        `${BACKEND_API_URL}/item-category/autocomplete?query=${query}`,
+        { withCredentials: true }
+      );      
       const data = await response.data;
       setCategories(data);
     } catch (error) {

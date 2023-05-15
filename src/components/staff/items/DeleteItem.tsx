@@ -17,7 +17,9 @@ export const DeleteItem = () => {
 
   const handleDelete = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
-    await axios.delete(`${BACKEND_API_URL}/item/${itemID}`);
+    await axios.delete(`${BACKEND_API_URL}/item/${itemID}`, {
+      withCredentials: true,
+    });
     navigate("/items");
   };
 

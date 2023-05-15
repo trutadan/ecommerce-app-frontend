@@ -29,6 +29,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { BACKEND_API_URL } from "../../../constants";
 import { DetailedItem } from "../../../models/Item";
 import { NavigationBar } from "../../user/NavigationBar";
+import axios from "axios";
 
 export const AllItems = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -53,11 +54,11 @@ export const AllItems = () => {
 
     url += `limit=${pageSize}&offset=${(page - 1) * pageSize}`;
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
-        setItems(data.results);
-        setTotalCount(data.count);
+    axios
+      .get(url, { withCredentials: true })
+      .then((response) => {
+        setItems(response.data.results);
+        setTotalCount(response.data.count);
         setLoading(false);
       })
       .catch((error) => {
@@ -94,8 +95,12 @@ export const AllItems = () => {
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             alignItems: "center",
             justifyContent: "space-between",
+            "@media (min-width:600px)": {
+              flexDirection: "row",
+            },
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -126,9 +131,8 @@ export const AllItems = () => {
               </Select>
             </FormControl>
           </Box>
-
           <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Typography sx={{ mr: 3, mt: 0.5 }}>Select Price Range:</Typography>
+            <Typography sx={{ mr: 3, mt: 0.5 }}>Price Range:</Typography>
             <Slider
               min={0}
               max={1000}
@@ -136,7 +140,16 @@ export const AllItems = () => {
               value={[minPrice, maxPrice]}
               valueLabelDisplay="auto"
               aria-labelledby="price-range-slider"
-              sx={{ width: "300px" }}
+              sx={{
+                width: "100%",
+                maxWidth: "350px",
+                "@media (min-width: 600px)": {
+                  maxWidth: "500px",
+                },
+                "@media (min-width: 960px)": {
+                  maxWidth: "600px",
+                },
+              }}
               onChange={handlePriceFilterChange}
             />
           </Box>
@@ -158,70 +171,78 @@ export const AllItems = () => {
           </div>
         )}
         {!loading && items.length > 0 && (
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>#</TableCell>
-                  <TableCell align="center">Title</TableCell>
-                  <TableCell align="center">Category</TableCell>
-                  <TableCell align="center">Price</TableCell>
-                  <TableCell align="center">Available number</TableCell>
-                  <TableCell align="center">Orders count</TableCell>
-                  <TableCell align="center">Refunds requested</TableCell>
-                  <TableCell align="center">Operations</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {items.map((item, index) => (
-                  <TableRow key={item.id}>
-                    <TableCell component="th" scope="row">
-                      {(page - 1) * pageSize + index + 1}
-                    </TableCell>
-                    <TableCell component="th" scope="row">
-                      <Link
-                        to={`/items/${item.id}/details`}
-                        title="View item's details"
-                      >
-                        {item.title}
-                      </Link>
-                    </TableCell>
-                    <TableCell align="center">{item.category.name}</TableCell>
-                    <TableCell align="center">{item.price}</TableCell>
-                    <TableCell align="center">
-                      {item.available_number}
-                    </TableCell>
-                    <TableCell align="center">{item.orders_count}</TableCell>
-                    <TableCell align="center">
-                      {item.refunds_requested_count}
-                    </TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        component={Link}
-                        sx={{ mr: 3 }}
-                        to={`/items/${item.id}/edit`}
-                      >
-                        <EditIcon />
-                      </IconButton>
+          <Box sx={{ overflow: "auto" }}>
+            <Box sx={{ width: "100%", display: "table", tableLayout: "fixed" }}>
+              <TableContainer component={Paper}>
+                <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>#</TableCell>
+                      <TableCell align="center">Title</TableCell>
+                      <TableCell align="center">Category</TableCell>
+                      <TableCell align="center">Price</TableCell>
+                      <TableCell align="center">Available number</TableCell>
+                      <TableCell align="center">Orders count</TableCell>
+                      <TableCell align="center">Refunds requested</TableCell>
+                      <TableCell align="center">Operations</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {items.map((item, index) => (
+                      <TableRow key={item.id}>
+                        <TableCell component="th" scope="row">
+                          {(page - 1) * pageSize + index + 1}
+                        </TableCell>
+                        <TableCell component="th" scope="row">
+                          <Link
+                            to={`/items/${item.id}/details`}
+                            title="View item's details"
+                          >
+                            {item.title}
+                          </Link>
+                        </TableCell>
+                        <TableCell align="center">
+                          {item.category.name}
+                        </TableCell>
+                        <TableCell align="center">{item.price}</TableCell>
+                        <TableCell align="center">
+                          {item.available_number}
+                        </TableCell>
+                        <TableCell align="center">
+                          {item.orders_count}
+                        </TableCell>
+                        <TableCell align="center">
+                          {item.refunds_requested_count}
+                        </TableCell>
+                        <TableCell align="center">
+                          <IconButton
+                            component={Link}
+                            sx={{ mr: 3 }}
+                            to={`/items/${item.id}/edit`}
+                          >
+                            <EditIcon />
+                          </IconButton>
 
-                      <IconButton
-                        component={Link}
-                        sx={{ mr: 3 }}
-                        to={`/items/${item.id}/delete`}
-                      >
-                        <DeleteForeverIcon sx={{ color: "red" }} />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-            <Pagination
-              count={Math.ceil(totalCount / pageSize)}
-              page={page}
-              onChange={handlePageChange}
-            />
-          </TableContainer>
+                          <IconButton
+                            component={Link}
+                            sx={{ mr: 3 }}
+                            to={`/items/${item.id}/delete`}
+                          >
+                            <DeleteForeverIcon sx={{ color: "red" }} />
+                          </IconButton>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                <Pagination
+                  count={Math.ceil(totalCount / pageSize)}
+                  page={page}
+                  onChange={handlePageChange}
+                />
+              </TableContainer>
+            </Box>
+          </Box>
         )}
       </Container>
     </>

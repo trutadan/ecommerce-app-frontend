@@ -15,6 +15,7 @@ import { DetailedItem } from "../../models/Item";
 import { handleAddItemToCart } from "../user/items/AddItemToCart";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import image_missing from "../../assets/images/image_missing.png";
+import axios from "axios";
 
 export const Home = () => {
   const [loading, setLoading] = useState(false);
@@ -23,17 +24,25 @@ export const Home = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(
-      `${BACKEND_API_URL}/item/most-sold/?ordering=-total_pieces_sold&limit=6&offset=6`
-    )
-      .then((response) => response.json())
+    axios
+      .get(`${BACKEND_API_URL}/item/most-sold/`, {
+        withCredentials: true,
+        params: {
+          ordering: "-total_pieces_sold",
+          limit: 6,
+          offset: 6,
+        },
+      })
+      .then((response) => response.data)
       .then((data) => {
         setMostSoldItems(data.results);
         setLoading(false);
         const itemDetailsPromises = data.results.map((item: MostSoldItemsDTO) =>
-          fetch(`${BACKEND_API_URL}/item/${item.id}/`).then((response) =>
-            response.json()
-          )
+          axios
+            .get(`${BACKEND_API_URL}/item/${item.id}/`, {
+              withCredentials: true,
+            })
+            .then((response) => response.data)
         );
         Promise.all(itemDetailsPromises).then((itemDetails) => {
           const updatedMostSoldItems = data.results.map(

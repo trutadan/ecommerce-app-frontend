@@ -15,6 +15,7 @@ import React, { useState, useEffect } from "react";
 import { MostSoldItemsDTO } from "../../../models/MostSoldItems";
 import { BACKEND_API_URL } from "../../../constants";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import axios from "axios";
 
 export const MostSoldItems = () => {
   const [loading, setLoading] = useState(false);
@@ -22,10 +23,12 @@ export const MostSoldItems = () => {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`${BACKEND_API_URL}/item/most-sold/`)
-      .then((response) => response.json())
-      .then((data) => {
-        setMostSoldItems(data.results);
+    axios
+      .get(`${BACKEND_API_URL}/item/most-sold/`, {
+        withCredentials: true,
+      })
+      .then((response) => {
+        setMostSoldItems(response.data.results);
         setLoading(false);
       })
       .catch((error) => {
