@@ -21,6 +21,7 @@ import UnauthorizedPage from "./UnauthorizedPage";
 import { StaffMenu } from "../staff/StaffMenu";
 import { EditUserRole } from "../staff/users/EditUserRole";
 import { AllUserRoles } from "../staff/users/AllUserRoles";
+import { Chat } from "./Chat";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/items" element={<UserAllItems />} />
           <Route path="/unauthorized" element={<UnauthorizedPage />} />
+          <Route path="/chat" element={<Chat />} />
 
           {/* any user */}
           <Route path="/confirm-account" element={<ConfirmRegisterPage />} />
@@ -58,10 +60,7 @@ function App() {
 
           {/* admin */}
           <Route path="/admin/roles" element={<AllUserRoles />} />
-          <Route
-            path="/admin/roles/:userID/edit"
-            element={<EditUserRole />}
-          />
+          <Route path="/admin/roles/:userID/edit" element={<EditUserRole />} />
 
           {/* catch all */}
           <Route path="*" element={<MissingPage />} />
