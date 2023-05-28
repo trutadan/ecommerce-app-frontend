@@ -22,6 +22,7 @@ import { StaffMenu } from "../staff/StaffMenu";
 import { EditUserRole } from "../staff/users/EditUserRole";
 import { AllUserRoles } from "../staff/users/AllUserRoles";
 import { Chat } from "./Chat";
+import { AllOrders } from "../staff/order/AllOrders";
 
 function App() {
   return (
@@ -57,6 +58,7 @@ function App() {
             path="/staff/item-categories/average-price"
             element={<AverageCategoryPrice />}
           />
+          <Route path="/staff/orders" element={<AllOrders />} />
 
           {/* admin */}
           <Route path="/admin/roles" element={<AllUserRoles />} />
