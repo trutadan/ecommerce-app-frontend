@@ -5,8 +5,8 @@ import { User } from "./User";
 export interface Order {
   id: number;
   items_count: string;
-  start_date: string;
-  ordered_date: string;
+  order_placed_date: string;
+  received_date: string;
   being_delivered: boolean;
   received: boolean;
   refund_requested: boolean;

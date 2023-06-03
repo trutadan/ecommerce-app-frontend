@@ -30,9 +30,9 @@ export const AllOrders = () => {
   const pageSize = 10;
 
   useEffect(() => {
-    setLoading(true);
     const fetchOrders = async () => {
       try {
+        setLoading(true);
         const response = await axios.get(`${BACKEND_API_URL}/order/`, {
           params: {
             limit: pageSize,
@@ -60,15 +60,21 @@ export const AllOrders = () => {
       })
       .then((response) => {
         // Process the response from the prediction endpoint
-        const estimatedDeliveryDate = response.data;
+        const estimatedDeliveryDate = response.data.delivery_date;
         const updatedOrders = [...orders];
         updatedOrders[index].predictedDeliveryDate = estimatedDeliveryDate;
         setOrders(updatedOrders);
       })
       .catch((error) => {
         console.error("Error predicting delivery date:", error);
+        // Handle the error and display an error message
+        // For example, you can update the corresponding order's predictedDeliveryDate to show the error
+        const updatedOrders = [...orders];
+        updatedOrders[index].predictedDeliveryDate = "Error predicting date";
+        setOrders(updatedOrders);
       });
   };
+  
 
   const handlePageChange = (
     event: React.ChangeEvent<unknown>,
@@ -92,29 +98,31 @@ export const AllOrders = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>ID</TableCell>
-                  <TableCell>Ordered Date</TableCell>
-                  <TableCell>Predict Arrival Date</TableCell>
-                  <TableCell>Predicted Arrival Date</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>ID</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>Order Placed Date</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>Arrival Date</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>Predicted Arrival Date</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {orders.map((order, index) => (
                   <TableRow key={order.id}>
-                    <TableCell>{order.id}</TableCell>
-                    <TableCell>{order.ordered_date}</TableCell>
-                    <TableCell>
-                      <button
-                        onClick={() => handlePredictDate(order.id, index)}
-                        disabled={order.being_delivered || order.received}
-                      >
-                        Predict Arrival Date
-                      </button>
+                    <TableCell sx={{ textAlign: "center" }}>{order.id}</TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>{new Date(order.order_placed_date).toLocaleDateString()}</TableCell>
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {order.received ? (
+                        new Date(order.received_date).toLocaleDateString()
+                      ) : (
+                        <button
+                          onClick={() => handlePredictDate(order.id, index)}
+                          disabled={order.received}
+                        >
+                          Predict Arrival Date
+                        </button>
+                      )}
                     </TableCell>
-                    <TableCell>
-                      {order.predictedDeliveryDate
-                        ? order.predictedDeliveryDate
-                        : "-"}
+                    <TableCell sx={{ textAlign: "center" }}>
+                      {order.predictedDeliveryDate ? new Date(order.predictedDeliveryDate).toLocaleDateString() : "-"}
                     </TableCell>
                   </TableRow>
                 ))}

@@ -22,7 +22,7 @@ import { StaffMenu } from "../staff/StaffMenu";
 import { EditUserRole } from "../staff/users/EditUserRole";
 import { AllUserRoles } from "../staff/users/AllUserRoles";
 import { Chat } from "./Chat";
-import { AllOrders } from "../staff/order/AllOrders";
+import { AllOrders } from "../staff/orders/AllOrders";
 
 function App() {
   return (
